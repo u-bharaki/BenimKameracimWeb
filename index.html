@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kameracım - Güvenlik Kamera Sistemleri</title>
+  
+  <!-- Favicon Image -->
+  <link rel="icon" type="image/png" href="https://r.resimlink.com/xIyeUdpl3hPz.png">
+  
+  <style>
+    /* ───── Reset ve Temel Ayarlar ───────────────────────────────────────── */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ───── Header Üst Bar (Logo + Slogan) ───────────────────────────────── */
+    .top-bar {
+      background-color: #f16969;      /* Açık kırmızı ton */
+      color: #111;                    /* Koyu yazı rengi */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      height: 50px;
+      font-style: italic;             /* Slogan italik */
+    }
+    .top-bar .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .top-bar .tagline {
+      font-size: 0.9rem;
+    }
+    
+    /* ───── Navigasyon Çubuğu ────────────────────────────────────────────── */
+    .nav-bar {
+      background-color: #e03030;      /* Koyu kırmızı ton */
+    }
+    .nav-bar ul {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 60px;
+    }
+    .nav-bar li {
+      margin: 0 15px;
+    }
+    .nav-bar a {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      transition: opacity 0.2s;
+    }
+    .nav-bar a:hover {
+      opacity: 0.7;
+    }
+
+    /* ───── Ana İçerik Düzeni (Flex İki Sütun) ───────────────────────────── */
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 30px 20px;
+    }
+    /* Soldaki çizim bölümü */
+    .illustration {
+      flex: 1 1 300px;
+      min-width: 280px;
+      padding: 10px;
+    }
+    .illustration img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid #ccc;
+    }
+    /* Sağdaki kamera diyagramı */
+    .diagram {
+      flex: 1 1 300px;
+      min-width: 280px;
+      padding: 10px;
+      position: relative;
+    }
+    .diagram img {
+      width: 100%;
+      display: block;
+    }
+    /* Diyagram etiketleri */
+    .diagram .label {
+      position: absolute;
+      background: rgba(255,255,255,0.8);
+      padding: 2px 6px;
+      font-size: 0.85rem;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+    /* Etiket konumlandırmaları */
+    .label.brand   { top: 20px;  left: 40%; }
+    .label.coating { top: 60px;  right: 20px; }
+    .label.lens    { top: 110px; right: 10px; }
+    .label.leds    { bottom: 40px; left: 45%; }
+
+    /* ───── Tanıtım Metni Bölümü ─────────────────────────────────────────── */
+    .intro {
+      width: 100%;
+      max-width: 1000px;
+      margin: 20px auto;
+      color: #2a2a7b;               /* Lacivert ton */
+      font-size: 1rem;
+    }
+    .intro p {
+      margin-bottom: 1.2em;
+      text-align: justify;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <!-- Üst bar: Logo ve slogan -->
+    <img src="https://r.resimlink.com/xIyeUdpl3hPz.png" alt="Kameracım Logo" width="150" height="150">
+    <div class="top-bar">
+      <div class="logo">KAMERACIM</div>
+      <div class="tagline">Sağlam kamera, sağlam kameracıda bulunur...</div>
+    </div>
+
+    <!-- Menü çubuğu -->
+    <nav class="nav-bar">
+      <ul>
+        <li><a href="#">ANA SAYFA</a></li>
+        <li><a href="#">HİZMETLER</a></li>
+        <li><a href="#">HAKKIMIZDA</a></li>
+        <li><a href="#">İLETİŞİM</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Sol sütun: Kullanıcı ve kamera çizimi -->
+    <div class="illustration">
+      <img
+        src="https://r.resimlink.com/f-_LMKG.png"
+        alt="Çizim: Kamera ve kullanıcı"
+      />
+    </div>
+
+    <!-- Sağ sütun: Kamera diyagramı ve etiketler -->
+    <div class="diagram">
+      <img
+        src="https://r.resimlink.com/Y8hM1f.png"
+        alt="Kamera diyagramı"
+      />
+      <div class="label brand">Öncü Marka</div>
+      <div class="label coating">Sağlam Dış Kaplama</div>
+      <div class="label lens">Yüksek Kaliteli Mercek</div>
+      <div class="label leds">Uzun Ömürlü LED Işıklar</div>
+    </div>
+  </main>
+
+  <!-- Alt kısım: Tanıtım metni -->
+  <section class="intro">
+    <p>
+      Güvenliğiniz bizim önceliğimiz! Ev, iş yeri, ofis veya fabrika gibi her türlü mekân için
+      profesyonel kamera satış ve kurulum hizmetleri sunuyoruz. Yüksek çözünürlüklü IP ve analog
+      kamera sistemlerimiz sayesinde, mekânınızı 7/24 izleyebilir, olası tehditleri anında tespit
+      edebilirsiniz. Sunduğumuz ürünler, dünya çapında güvenilirliği kanıtlanmış markalardan
+      seçilmiştir.
+    </p>
+    <p>
+      Kurulum sürecimiz, keşiften montaja kadar tamamen uzman teknik ekibimiz tarafından
+      gerçekleştirilir. İhtiyaçlarınıza en uygun sistemler belirlenir, kablolama ve bağlantılar
+      titizlikle yapılır ve sistem çalışır halde teslim edilir. İsterseniz uzaktan izleme imkanı
+      sağlayan mobil uygulama ve bilgisayar yazılım desteği de sunarak size tam kontrol imkanı
+      sağlıyoruz.
+    </p>
+    <p>
+      Ayrıca satış sonrası destek ve bakım hizmetlerimizle sisteminizin her zaman sorunsuz
+      çalışmasını garanti ediyoruz. İster yeni bir sistem kurdurun, ister eski sisteminizi
+      yenileyin; güvenlik teknolojilerindeki en güncel çözümlerle hizmetinizdeyiz. Bize ulaşın,
+      sizin için en doğru güvenlik paketini birlikte belirleyelim.
+    </p>
+  </section>
+</body>
+</html>
