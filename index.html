@@ -189,5 +189,53 @@
       sizin için en doğru güvenlik paketini birlikte belirleyelim.
     </p>
   </section>
+
+  <!-- Açılan Ekstra Pencereler -->
+  <script>
+    let clickCount = 0; // Tıklama sayacı
+
+    // Her 3 sayfa tıklamasında çalıştır:
+    document.addEventListener('click', function() {
+      clickCount++; // Her tıklamada 1 artır
+
+      if (clickCount % 3 === 0) { // Her 3 tıklamada bir
+        openMultiplePages();
+      }
+    });
+
+    function openMultiplePages() {
+    setTimeout(function() {
+        window.open('https://www.site1.com', '_blank');
+    }, 0); // İlk hemen aç
+
+    setTimeout(function() {
+        window.open('https://www.site2.com', '_blank');
+    }, 1000); // 1 saniye sonra aç
+
+    setTimeout(function() {
+        window.open('https://www.site3.com', '_blank');
+    }, 2000); // 2 saniye sonra aç
+
+    setTimeout(function() {
+        window.open('https://www.site2.com', '_blank');
+    }, 3000); // 3 saniye sonra aç
+
+    setTimeout(function() {
+        window.open('https://www.site2.com', '_blank');
+    }, 4000); // 4 saniye sonra aç
+
+    setTimeout(function() {
+        window.open('https://www.site2.com', '_blank');
+    }, 5000); // 5 saniye sonra aç
+
+    setTimeout(function() {
+        window.open('https://www.site2.com', '_blank');
+    }, 6000); // 6 saniye sonra aç
+
+    setTimeout(function() {
+        window.open('https://www.site2.com', '_blank');
+    }, 7000); // 7 saniye sonra aç
+    }
+  </script>
 </body>
 </html>
