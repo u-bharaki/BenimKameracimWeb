@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Split & Merge (.zip)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f0f0f0;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .section {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 400px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .drop-zone {
+      border: 2px dashed #999;
+      padding: 2rem;
+      text-align: center;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    .drop-zone.dragover {
+      background: #e0e0ff;
+    }
+    .file-list {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    progress {
+      width: 100%;
+      margin-top: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>File Split & Merge (.zip)</h1>
+  <div class="container">
+    <div class="section">
+      <h2>Split File</h2>
+      <div class="drop-zone" id="splitDropZone">Drop a file here to split</div>
+      <label for="chunkSizeInput">Chunk size (MB):</label>
+      <input type="number" id="chunkSizeInput" min="1" value="10" style="width: 100%; margin-top: 0.5rem; padding: 0.5rem;" />
+      <button id="splitButton">Split File</button>
+      <progress id="splitProgress" value="0" max="100"></progress>
+      <div class="file-list" id="splitFileList"></div>
+    </div>
+    <div class="section">
+      <h2>Merge Files</h2>
+      <div class="drop-zone" id="mergeDropZone">Drop a .zip file here to merge</div>
+      <button id="mergeButton">Merge Files</button>
+      <progress id="mergeProgress" value="0" max="100"></progress>
+      <div class="file-list" id="mergeFileList"></div>
+    </div>
+  </div>
+
+  <script>
+    const splitDropZone = document.getElementById("splitDropZone");
+    const splitFileList = document.getElementById("splitFileList");
+    const splitButton = document.getElementById("splitButton");
+    const splitProgress = document.getElementById("splitProgress");
+
+    const mergeDropZone = document.getElementById("mergeDropZone");
+    const mergeFileList = document.getElementById("mergeFileList");
+    const mergeButton = document.getElementById("mergeButton");
+    const mergeProgress = document.getElementById("mergeProgress");
+
+    let fileToSplit = null;
+
+    function handleDragOver(evt) {
+      evt.preventDefault();
+      evt.currentTarget.classList.add("dragover");
+    }
+
+    function handleDragLeave(evt) {
+      evt.currentTarget.classList.remove("dragover");
+    }
+
+    function handleDropSplit(evt) {
+      evt.preventDefault();
+      evt.currentTarget.classList.remove("dragover");
+      fileToSplit = evt.dataTransfer.files[0];
+      splitFileList.innerHTML = `Ready to split: ${fileToSplit.name}`;
+    }
+
+    function handleDropMerge(evt) {
+      evt.preventDefault();
+      evt.currentTarget.classList.remove("dragover");
+      const zipFile = evt.dataTransfer.files[0];
+      mergeFileList.innerHTML = `Ready to merge: ${zipFile.name}`;
+      mergeDropZone.zipFile = zipFile;
+    }
+
+    splitButton.onclick = async () => {
+      if (!fileToSplit) return;
+      const chunkSizeInput = document.getElementById("chunkSizeInput");
+      const sizeMB = parseInt(chunkSizeInput.value);
+      const chunkSize = sizeMB * 1024 * 1024;
+      const zip = new JSZip();
+      let offset = 0;
+      let index = 1;
+      const totalChunks = Math.ceil(fileToSplit.size / chunkSize);
+      splitProgress.style.display = "block";
+
+      while (offset < fileToSplit.size) {
+        const chunk = fileToSplit.slice(offset, offset + chunkSize);
+        const arrayBuffer = await chunk.arrayBuffer();
+        zip.file(`${fileToSplit.name}_${index}`, arrayBuffer);
+        offset += chunkSize;
+        index++;
+        splitProgress.value = ((index - 1) / totalChunks) * 100;
+      }
+
+      zip.generateAsync({ type: "blob" }, (metadata) => {
+        splitProgress.value = metadata.percent;
+      }).then((content) => {
+        const url = URL.createObjectURL(content);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${fileToSplit.name}_split.zip`;
+        a.textContent = `Download ${fileToSplit.name}_split.zip`;
+        a.style.display = "block";
+        splitFileList.appendChild(a);
+        splitProgress.style.display = "none";
+      });
+    };
+
+    mergeButton.onclick = async () => {
+  const zipFile = mergeDropZone.zipFile;
+  if (!zipFile) {
+    mergeFileList.innerHTML += '<div style="color:red">No file loaded for merging.</div>';
+    return;
+  }
+
+  mergeProgress.value = 0;
+  mergeProgress.style.display = "block";
+
+  try {
+    const zip = await JSZip.loadAsync(zipFile);
+    const entries = Object.keys(zip.files)
+      .filter(name => !zip.files[name].dir)
+      .sort((a, b) => {
+        const aNum = parseInt(a.split('_').pop());
+        const bNum = parseInt(b.split('_').pop());
+        return aNum - bNum;
+      });
+
+    const buffers = [];
+    for (let i = 0; i < entries.length; i++) {
+      const name = entries[i];
+      const data = await zip.files[name].async("arraybuffer");
+      buffers.push(data);
+      mergeProgress.value = ((i + 1) / entries.length) * 100;
+    }
+
+    const mergedBlob = new Blob(buffers);
+
+    // Get correct base name and extension from the first file
+    const firstFileName = entries[0];
+    const baseParts = firstFileName.split("_");
+    baseParts.pop(); // remove last _X part
+    const joinedName = baseParts.join("_");
+    const dotIndex = joinedName.lastIndexOf(".");
+    const baseName = dotIndex > -1 ? joinedName.slice(0, dotIndex) : joinedName;
+    const ext = dotIndex > -1 ? joinedName.slice(dotIndex + 1) : "bin";
+    const mergedName = `${baseName}_merge.${ext}`;
+
+    const url = URL.createObjectURL(mergedBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = mergedName;
+    a.textContent = `Download ${mergedName}`;
+    a.style.display = "block";
+    mergeFileList.appendChild(a);
+  } catch (error) {
+    mergeFileList.innerHTML += `<div style='color:red'>Merge failed: ${error.message}</div>`;
+  } finally {
+    mergeProgress.style.display = "none";
+  }
+};
+
+    splitDropZone.addEventListener("dragover", handleDragOver);
+    splitDropZone.addEventListener("dragleave", handleDragLeave);
+    splitDropZone.addEventListener("drop", handleDropSplit);
+
+    mergeDropZone.addEventListener("dragover", handleDragOver);
+    mergeDropZone.addEventListener("dragleave", handleDragLeave);
+    mergeDropZone.addEventListener("drop", handleDropMerge);
+  </script>
+</body>
+</html>
